@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" fill="none">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#dbeafe"/>
+      <stop offset="100%" stop-color="#eff6ff"/>
+    </linearGradient>
+    <linearGradient id="building" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1a56db"/>
+      <stop offset="100%" stop-color="#1240a8"/>
+    </linearGradient>
+  </defs>
+  <!-- Céu -->
+  <rect width="800" height="500" fill="url(#sky)"/>
+  <!-- Sol -->
+  <circle cx="680" cy="80" r="50" fill="#fbbf24" opacity="0.8"/>
+  <!-- Nuvens -->
+  <ellipse cx="150" cy="90" rx="60" ry="25" fill="white" opacity="0.8"/>
+  <ellipse cx="200" cy="85" rx="50" ry="20" fill="white" opacity="0.7"/>
+  <ellipse cx="500" cy="60" rx="70" ry="22" fill="white" opacity="0.6"/>
+  <!-- Gramado -->
+  <rect x="0" y="380" width="800" height="120" fill="#22c55e" opacity="0.3"/>
+  <rect x="0" y="400" width="800" height="100" fill="#16a34a" opacity="0.2"/>
+  <!-- Edifício principal -->
+  <rect x="250" y="120" width="300" height="280" rx="8" fill="url(#building)"/>
+  <!-- Janelas -->
+  <g fill="#bfdbfe" opacity="0.8">
+    <rect x="280" y="160" width="40" height="50" rx="4"/>
+    <rect x="340" y="160" width="40" height="50" rx="4"/>
+    <rect x="400" y="160" width="40" height="50" rx="4"/>
+    <rect x="460" y="160" width="40" height="50" rx="4"/>
+    <rect x="280" y="230" width="40" height="50" rx="4"/>
+    <rect x="340" y="230" width="40" height="50" rx="4"/>
+    <rect x="400" y="230" width="40" height="50" rx="4"/>
+    <rect x="460" y="230" width="40" height="50" rx="4"/>
+    <rect x="280" y="300" width="40" height="50" rx="4"/>
+    <rect x="340" y="300" width="40" height="50" rx="4"/>
+    <rect x="400" y="300" width="40" height="50" rx="4"/>
+    <rect x="460" y="300" width="40" height="50" rx="4"/>
+  </g>
+  <!-- Porta -->
+  <rect x="370" y="340" width="60" height="60" rx="4" fill="#1e3a8a"/>
+  <circle cx="415" cy="375" r="4" fill="#fbbf24"/>
+  <!-- Logo no topo -->
+  <rect x="340" y="130" width="120" height="20" rx="4" fill="#f97316"/>
+  <text x="400" y="144" text-anchor="middle" font-family="Poppins, Arial" font-weight="700" font-size="11" fill="white">HIPERATIVO</text>
+  <!-- Ala esquerda -->
+  <rect x="120" y="200" width="130" height="200" rx="6" fill="#2563eb"/>
+  <g fill="#bfdbfe" opacity="0.7">
+    <rect x="140" y="230" width="30" height="35" rx="3"/>
+    <rect x="185" y="230" width="30" height="35" rx="3"/>
+    <rect x="140" y="280" width="30" height="35" rx="3"/>
+    <rect x="185" y="280" width="30" height="35" rx="3"/>
+    <rect x="140" y="330" width="30" height="35" rx="3"/>
+    <rect x="185" y="330" width="30" height="35" rx="3"/>
+  </g>
+  <!-- Ala direita -->
+  <rect x="550" y="200" width="130" height="200" rx="6" fill="#2563eb"/>
+  <g fill="#bfdbfe" opacity="0.7">
+    <rect x="570" y="230" width="30" height="35" rx="3"/>
+    <rect x="615" y="230" width="30" height="35" rx="3"/>
+    <rect x="570" y="280" width="30" height="35" rx="3"/>
+    <rect x="615" y="280" width="30" height="35" rx="3"/>
+    <rect x="570" y="330" width="30" height="35" rx="3"/>
+    <rect x="615" y="330" width="30" height="35" rx="3"/>
+  </g>
+  <!-- Quadra esportiva -->
+  <rect x="50" y="410" width="120" height="60" rx="4" fill="#ea580c" opacity="0.4"/>
+  <line x1="110" y1="410" x2="110" y2="470" stroke="white" stroke-width="2" opacity="0.5"/>
+  <circle cx="110" cy="440" r="20" stroke="white" stroke-width="2" fill="none" opacity="0.5"/>
+  <!-- Piscina -->
+  <rect x="630" y="420" width="100" height="40" rx="4" fill="#06b6d4" opacity="0.5"/>
+  <!-- Árvores -->
+  <circle cx="80" cy="370" r="25" fill="#16a34a"/>
+  <rect x="75" y="370" width="10" height="30" fill="#854d0e"/>
+  <circle cx="720" cy="370" r="25" fill="#16a34a"/>
+  <rect x="715" y="370" width="10" height="30" fill="#854d0e"/>
+  <!-- Alunos (emoji-style circles) -->
+  <circle cx="200" cy="430" r="12" fill="#fbbf24"/>
+  <circle cx="230" cy="435" r="10" fill="#f472b6"/>
+  <circle cx="260" cy="432" r="11" fill="#60a5fa"/>
+  <circle cx="540" cy="430" r="12" fill="#a78bfa"/>
+  <circle cx="570" cy="435" r="10" fill="#34d399"/>
+  <circle cx="600" cy="432" r="11" fill="#fb923c"/>
+</svg>

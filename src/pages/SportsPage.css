@@ -1,0 +1,40 @@
+.sports-hero {
+  background: linear-gradient(135deg, #059669, #10b981);
+}
+
+.sports-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--space-xl);
+}
+
+.sport-card {
+  padding: var(--space-2xl);
+  text-align: center;
+}
+
+.sport-card__icon {
+  font-size: 4rem;
+  margin-bottom: var(--space-md);
+}
+
+.sport-card__title {
+  font-size: 1.375rem;
+  margin-bottom: var(--space-sm);
+}
+
+.sport-card__desc {
+  color: var(--color-gray-600);
+  margin-bottom: var(--space-lg);
+  line-height: 1.7;
+}
+
+.sport-card__benefits {
+  text-align: left;
+  font-size: 0.875rem;
+  color: var(--color-gray-600);
+}
+
+.sport-card__benefits li {
+  padding: var(--space-xs) 0;
+}

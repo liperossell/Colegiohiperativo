@@ -1,0 +1,128 @@
+.about-hero {
+  background: linear-gradient(135deg, var(--color-primary-dark), var(--color-primary));
+  color: var(--color-white);
+  padding: var(--space-4xl) 0;
+  text-align: center;
+}
+
+.about-hero__title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  color: var(--color-white);
+  margin-bottom: var(--space-md);
+}
+
+.about-hero__subtitle {
+  font-size: 1.125rem;
+  opacity: 0.9;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.about-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3xl);
+  align-items: center;
+}
+
+.about-content__text h3 {
+  font-size: 1.5rem;
+  margin-bottom: var(--space-md);
+}
+
+.about-content__text p {
+  color: var(--color-gray-600);
+  margin-bottom: var(--space-md);
+  line-height: 1.8;
+}
+
+.about-values {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-lg);
+}
+
+.about-value {
+  display: flex;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+  background: var(--color-gray-50);
+  border-radius: var(--radius-lg);
+}
+
+.about-value__emoji {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.about-value__title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: var(--space-xs);
+}
+
+.about-value__text {
+  font-size: 0.875rem;
+  color: var(--color-gray-600);
+}
+
+.timeline {
+  position: relative;
+  padding-left: var(--space-2xl);
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 8px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--color-primary-light);
+}
+
+.timeline__item {
+  position: relative;
+  margin-bottom: var(--space-xl);
+  padding-left: var(--space-lg);
+}
+
+.timeline__item::before {
+  content: '';
+  position: absolute;
+  left: -24px;
+  top: 6px;
+  width: 12px;
+  height: 12px;
+  background: var(--color-primary);
+  border-radius: 50%;
+  border: 2px solid var(--color-white);
+  box-shadow: var(--shadow-md);
+}
+
+.timeline__year {
+  font-weight: 700;
+  color: var(--color-primary);
+  font-size: 0.875rem;
+}
+
+.timeline__title {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  margin: var(--space-xs) 0;
+}
+
+.timeline__text {
+  font-size: 0.875rem;
+  color: var(--color-gray-600);
+}
+
+@media (max-width: 768px) {
+  .about-content {
+    grid-template-columns: 1fr;
+  }
+
+  .about-values {
+    grid-template-columns: 1fr;
+  }
+}

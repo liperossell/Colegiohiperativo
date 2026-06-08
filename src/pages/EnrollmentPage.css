@@ -1,0 +1,206 @@
+.enrollment {
+  padding: var(--space-3xl) 0 var(--space-4xl);
+}
+
+.enrollment__header {
+  text-align: center;
+  margin-bottom: var(--space-3xl);
+}
+
+.enrollment__title {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  margin-bottom: var(--space-md);
+}
+
+.enrollment__subtitle {
+  color: var(--color-gray-600);
+  font-size: 1.0625rem;
+}
+
+.enrollment__steps {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-3xl);
+  flex-wrap: wrap;
+}
+
+.enrollment__step {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-full);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-gray-500);
+  background: var(--color-gray-100);
+  transition: all var(--transition-base);
+}
+
+.enrollment__step--active {
+  background: var(--color-primary);
+  color: var(--color-white);
+}
+
+.enrollment__step--done {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--color-success);
+}
+
+.enrollment__step-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.enrollment__form {
+  max-width: 800px;
+  margin: 0 auto;
+  background: var(--color-white);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-lg);
+  padding: var(--space-2xl);
+}
+
+.enrollment__form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+}
+
+.enrollment__form-grid--full {
+  grid-column: 1 / -1;
+}
+
+.enrollment__actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--space-2xl);
+  padding-top: var(--space-xl);
+  border-top: 1px solid var(--color-gray-200);
+}
+
+.enrollment__sports-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: var(--space-sm);
+}
+
+.enrollment__sport-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-md);
+  border: 2px solid var(--color-gray-200);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-align: center;
+}
+
+.enrollment__sport-option:hover {
+  border-color: var(--color-primary-light);
+}
+
+.enrollment__sport-option--selected {
+  border-color: var(--color-primary);
+  background: rgba(26, 86, 219, 0.05);
+}
+
+.enrollment__sport-option input {
+  display: none;
+}
+
+.enrollment__sport-emoji {
+  font-size: 1.75rem;
+}
+
+.enrollment__sport-name {
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.enrollment__review {
+  background: var(--color-gray-50);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+}
+
+.enrollment__review-section {
+  margin-bottom: var(--space-lg);
+}
+
+.enrollment__review-section h4 {
+  font-size: 0.9375rem;
+  color: var(--color-primary);
+  margin-bottom: var(--space-sm);
+  padding-bottom: var(--space-xs);
+  border-bottom: 1px solid var(--color-gray-200);
+}
+
+.enrollment__review-item {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--space-xs) 0;
+  font-size: 0.875rem;
+}
+
+.enrollment__review-label {
+  color: var(--color-gray-500);
+}
+
+.enrollment__review-value {
+  font-weight: 500;
+  text-align: right;
+}
+
+.enrollment__checkbox-group {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+.enrollment__checkbox-group input {
+  margin-top: 4px;
+  accent-color: var(--color-primary);
+}
+
+.enrollment__checkbox-label {
+  font-size: 0.875rem;
+  color: var(--color-gray-600);
+  line-height: 1.5;
+}
+
+.enrollment__success {
+  text-align: center;
+  padding: var(--space-4xl) var(--space-xl);
+}
+
+.enrollment__success-emoji {
+  font-size: 4rem;
+  margin-bottom: var(--space-lg);
+}
+
+@media (max-width: 768px) {
+  .enrollment__form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .enrollment__actions {
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .enrollment__actions .btn {
+    width: 100%;
+  }
+}
