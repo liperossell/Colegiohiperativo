@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" fill="none">
+  <defs>
+    <linearGradient id="logoGradFull" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1a56db"/>
+      <stop offset="100%" stop-color="#3b82f6"/>
+    </linearGradient>
+    <linearGradient id="accentGradFull" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f97316"/>
+      <stop offset="100%" stop-color="#fb923c"/>
+    </linearGradient>
+  </defs>
+  <!-- Símbolo -->
+  <circle cx="40" cy="40" r="36" fill="url(#logoGradFull)"/>
+  <path d="M22 30 L40 24 L58 30 L58 52 L40 58 L22 52 Z" fill="white" opacity="0.95"/>
+  <path d="M40 24 L40 58" stroke="#1a56db" stroke-width="1.5"/>
+  <path d="M26 34 L37 31 L37 48 L26 51 Z" fill="#e0e7ff"/>
+  <path d="M43 31 L54 34 L54 51 L43 48 Z" fill="#e0e7ff"/>
+  <path d="M40 18 L44 28 L54 29 L46 36 L48 46 L40 40 L32 46 L34 36 L26 29 L36 28 Z" fill="url(#accentGradFull)"/>
+  <text x="40" y="47" text-anchor="middle" font-family="Poppins, Arial, sans-serif" font-weight="800" font-size="14" fill="#1a56db">H</text>
+  <!-- Tipografia -->
+  <text x="88" y="32" font-family="Poppins, Arial, sans-serif" font-weight="600" font-size="13" fill="#4b5563" letter-spacing="1">COLÉGIO</text>
+  <text x="88" y="54" font-family="Poppins, Arial, sans-serif" font-weight="800" font-size="24" fill="#1a56db">Hiper</text>
+  <text x="148" y="54" font-family="Poppins, Arial, sans-serif" font-weight="800" font-size="24" fill="#f97316">ativo</text>
+  <text x="88" y="68" font-family="Inter, Arial, sans-serif" font-weight="600" font-size="9" fill="#f97316" letter-spacing="2">FACULDADE</text>
+</svg>
