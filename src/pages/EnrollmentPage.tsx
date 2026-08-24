@@ -25,6 +25,7 @@ import {
   calculateAge,
   fetchAddressByCEP,
 } from '../utils/validation';
+import { submitMatricula } from '../services/enrollmentApi';
 import './EnrollmentPage.css';
 
 const STEPS: { key: EnrollmentStep; label: string }[] = [
@@ -54,6 +55,8 @@ export default function EnrollmentPage() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [submitted, setSubmitted] = useState(false);
   const [loadingCEP, setLoadingCEP] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   const currentStepIndex = STEPS.findIndex((s) => s.key === step);
   const isMinor = form.birthDate ? calculateAge(form.birthDate) < 18 : false;
@@ -177,8 +180,16 @@ export default function EnrollmentPage() {
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
     if (!validateStep()) return;
-    console.log('Matrícula enviada:', form);
-    setSubmitted(true);
+
+    setSubmitting(true);
+    setSubmitError('');
+
+    submitMatricula(form)
+      .then(() => setSubmitted(true))
+      .catch((error: Error) => {
+        setSubmitError(error.message || 'Erro ao enviar matrícula. Tente novamente.');
+      })
+      .finally(() => setSubmitting(false));
   }
 
   if (submitted) {
@@ -548,11 +559,18 @@ export default function EnrollmentPage() {
           )}
 
           <div className="enrollment__actions">
+            {submitError && (
+              <div className="alert alert--error" style={{ marginBottom: '1rem' }}>
+                {submitError}
+              </div>
+            )}
             {currentStepIndex > 0 ? (
               <button type="button" className="btn btn--ghost" onClick={prevStep}>← Voltar</button>
             ) : <div />}
             {step === 'review' ? (
-              <button type="submit" className="btn btn--primary btn--lg">✅ Confirmar Matrícula</button>
+              <button type="submit" className="btn btn--primary btn--lg" disabled={submitting}>
+                {submitting ? 'Enviando...' : '✅ Confirmar Matrícula'}
+              </button>
             ) : (
               <button type="button" className="btn btn--primary btn--lg" onClick={nextStep}>Próximo →</button>
             )}

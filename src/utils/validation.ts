@@ -67,6 +67,10 @@ export function calculateAge(birthDate: string): number {
   return age;
 }
 
+export function digitsOnly(value: string): string {
+  return value.replace(/\D/g, '');
+}
+
 export async function fetchAddressByCEP(cep: string): Promise<Partial<{
   street: string;
   neighborhood: string;
