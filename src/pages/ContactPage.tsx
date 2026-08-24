@@ -1,13 +1,15 @@
 import { useState, FormEvent, ChangeEvent } from 'react';
 import { BRAND } from '../data/constants';
-import { validateEmail } from '../utils/validation';
-import { formatPhone } from '../utils/validation';
+import { validateEmail, formatPhone } from '../utils/validation';
+import { submitContato } from '../services/enrollmentApi';
 import './ContactPage.css';
 
 export default function ContactPage() {
   const [form, setForm] = useState({ name: '', email: '', phone: '', subject: '', message: '' });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   function handleChange(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
     const { name, value } = e.target;
@@ -21,10 +23,17 @@ export default function ContactPage() {
     if (!form.email || !validateEmail(form.email)) newErrors.email = 'E-mail válido é obrigatório';
     if (!form.message.trim()) newErrors.message = 'Mensagem é obrigatória';
     setErrors(newErrors);
-    if (Object.keys(newErrors).length === 0) {
-      console.log('Contato:', form);
-      setSent(true);
-    }
+    if (Object.keys(newErrors).length > 0) return;
+
+    setLoading(true);
+    setSubmitError('');
+
+    submitContato(form)
+      .then(() => setSent(true))
+      .catch((error: Error) => {
+        setSubmitError(error.message || 'Erro ao enviar mensagem. Tente novamente.');
+      })
+      .finally(() => setLoading(false));
   }
 
   return (
@@ -87,6 +96,7 @@ export default function ContactPage() {
               ) : (
                 <form onSubmit={handleSubmit} className="auth-form">
                   <h3 style={{ marginBottom: '0.5rem' }}>Envie sua mensagem</h3>
+                  {submitError && <div className="alert alert--error">{submitError}</div>}
                   <div className="form-group">
                     <label className="form-label form-label--required" htmlFor="name">Nome</label>
                     <input id="name" name="name" className={`form-input ${errors.name ? 'form-input--error' : ''}`}
@@ -123,7 +133,9 @@ export default function ContactPage() {
                       rows={5} value={form.message} onChange={handleChange} />
                     {errors.message && <span className="form-error">{errors.message}</span>}
                   </div>
-                  <button type="submit" className="btn btn--primary btn--lg">Enviar Mensagem</button>
+                  <button type="submit" className="btn btn--primary btn--lg" disabled={loading}>
+                    {loading ? 'Enviando...' : 'Enviar Mensagem'}
+                  </button>
                 </form>
               )}
             </div>

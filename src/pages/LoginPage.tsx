@@ -2,6 +2,7 @@ import { useState, FormEvent, ChangeEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { UserLogin, INITIAL_LOGIN, FormErrors } from '../types';
 import { validateEmail } from '../utils/validation';
+import { submitLogin } from '../services/enrollmentApi';
 import './AuthPages.css';
 
 export default function LoginPage() {
@@ -9,6 +10,7 @@ export default function LoginPage() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
     const { name, value, type, checked } = e.target;
@@ -29,11 +31,18 @@ export default function LoginPage() {
     e.preventDefault();
     if (!validate()) return;
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setSuccess(true);
-      console.log('Login:', form);
-    }, 1500);
+    setSubmitError('');
+
+    submitLogin(form.email, form.password, form.rememberMe)
+      .then((data) => {
+        localStorage.setItem('hiperativo_token', data.token);
+        localStorage.setItem('hiperativo_user', JSON.stringify(data.user));
+        setSuccess(true);
+      })
+      .catch((error: Error) => {
+        setSubmitError(error.message || 'Erro ao entrar. Tente novamente.');
+      })
+      .finally(() => setLoading(false));
   }
 
   return (
@@ -47,10 +56,11 @@ export default function LoginPage() {
 
         {success ? (
           <div className="alert alert--success">
-            Login realizado com sucesso! (Demonstração — backend será integrado futuramente.)
+            Login realizado com sucesso! Bem-vindo(a) ao portal do Hiperativo.
           </div>
         ) : (
           <form className="auth-form" onSubmit={handleSubmit}>
+            {submitError && <div className="alert alert--error">{submitError}</div>}
             <div className="form-group">
               <label className="form-label form-label--required" htmlFor="email">E-mail</label>
               <input id="email" name="email" type="email" className={`form-input ${errors.email ? 'form-input--error' : ''}`}

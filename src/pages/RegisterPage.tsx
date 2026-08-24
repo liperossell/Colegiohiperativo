@@ -2,6 +2,7 @@ import { useState, FormEvent, ChangeEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { UserRegistration, INITIAL_REGISTRATION, FormErrors } from '../types';
 import { formatCPF, formatPhone, validateEmail, validateCPF, validatePassword } from '../utils/validation';
+import { submitRegistro } from '../services/enrollmentApi';
 import './AuthPages.css';
 
 const USER_TYPES = [
@@ -16,6 +17,7 @@ export default function RegisterPage() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
     const { name, value, type, checked } = e.target;
@@ -58,11 +60,14 @@ export default function RegisterPage() {
     e.preventDefault();
     if (!validate()) return;
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setSuccess(true);
-      console.log('Cadastro:', form);
-    }, 1500);
+    setSubmitError('');
+
+    submitRegistro(form)
+      .then(() => setSuccess(true))
+      .catch((error: Error) => {
+        setSubmitError(error.message || 'Erro ao criar conta. Tente novamente.');
+      })
+      .finally(() => setLoading(false));
   }
 
   const strength = getPasswordStrength();
@@ -162,6 +167,8 @@ export default function RegisterPage() {
               </label>
             </div>
             {errors.acceptTerms && <span className="form-error">{errors.acceptTerms}</span>}
+
+            {submitError && <div className="alert alert--error">{submitError}</div>}
 
             <button type="submit" className="btn btn--primary btn--lg" disabled={loading}>
               {loading ? 'Criando conta...' : 'Criar Conta'}

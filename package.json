@@ -8,7 +8,17 @@
     "dev": "vite --host",
     "build": "tsc -b && vite build",
     "preview": "vite preview --host",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "api:install": "cd api && npm install",
+    "api:dev": "cd api && npm run dev",
+    "db:up": "docker compose -f ../infra/postgres/docker-compose.yml up -d",
+    "db:down": "docker compose -f ../infra/postgres/docker-compose.yml down",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:codegen:matricula": "playwright codegen http://localhost:5173/matricula",
+    "test:e2e:codegen:cadastro": "playwright codegen http://localhost:5173/cadastro",
+    "test:e2e:report": "playwright show-report playwright-report"
   },
   "dependencies": {
     "react": "^18.3.1",
@@ -16,9 +26,12 @@
     "react-router-dom": "^6.28.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.62.1",
+    "@types/pg": "^8.11.11",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.3",
+    "pg": "^8.13.1",
     "typescript": "^5.6.3",
     "vite": "^5.4.10"
   }
