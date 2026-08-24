@@ -3,11 +3,24 @@
 .SYNOPSIS
   Sobe o ambiente de desenvolvimento do Colégio Hiperativo (API + frontend Vite).
 
+.PARAMETER GmailClientId
+  Google OAuth Client ID (opcional; usado apenas no bootstrap inicial).
+
+.PARAMETER GmailClientSecret
+  Google OAuth Client Secret (opcional; usado apenas no bootstrap inicial).
+
+.PARAMETER ForceInfraBootstrap
+  Força novo bootstrap da infra mesmo que já tenha sido executado antes.
+
 .EXAMPLE
   .\run-dev.ps1
 #>
 [CmdletBinding()]
-param()
+param(
+  [string]$GmailClientId,
+  [string]$GmailClientSecret,
+  [switch]$ForceInfraBootstrap
+)
 
 $ErrorActionPreference = "Stop"
 
@@ -16,6 +29,7 @@ $ApiDir = Join-Path $ProjectRoot "api"
 $ApiEnvExample = Join-Path $ApiDir ".env.example"
 $ApiEnvPath = Join-Path $ApiDir ".env"
 $InfraCompose = Join-Path $ProjectRoot "..\infra\docker-compose.yml"
+$InfraRoot = Split-Path $InfraCompose -Parent
 
 function Write-Step {
   param([string]$Message)
@@ -49,20 +63,8 @@ function Ensure-EmailServiceEnv {
   }
 }
 
-function Test-InfraReady {
-  try {
-    $db = docker exec filhao-db pg_isready -U filhao -d filhao_projetos 2>$null
-    if ($LASTEXITCODE -ne 0) { return $false }
-
-    $health = Invoke-RestMethod -Uri "http://localhost:3010/health" -TimeoutSec 3
-    return [bool]$health.ok
-  } catch {
-    return $false
-  }
-}
-
 Write-Host ""
-Write-Host "Colégio Hiperativo — desenvolvimento" -ForegroundColor Green
+Write-Host "Colegio Hiperativo - desenvolvimento" -ForegroundColor Green
 
 if (-not (Test-CommandAvailable "npm")) {
   throw "npm não encontrado. Instale o Node.js."
@@ -74,26 +76,54 @@ if (-not (Test-Path $ApiEnvExample)) {
 
 Ensure-EnvFile -ExamplePath $ApiEnvExample -TargetPath $ApiEnvPath
 
-if (-not (Test-InfraReady)) {
-  Write-Host ""
-  Write-Host "Infra não detectada. Subindo postgres + email-service..." -ForegroundColor Yellow
+Write-Step "Garantindo repositório infra (GitHub)"
+node (Join-Path $ProjectRoot "scripts\ensure-infra.mjs")
+if ($LASTEXITCODE -ne 0) {
+  throw "Falha ao preparar infra. Verifique conexão com GitHub."
+}
 
-  if (-not (Test-CommandAvailable "docker")) {
-    throw "Docker não encontrado. Rode primeiro: infra\scripts\bootstrap-and-run.ps1"
+$DockerCliScript = Join-Path $InfraRoot "scripts\docker-cli.ps1"
+. $DockerCliScript
+
+$needsBootstrap = $ForceInfraBootstrap -or -not (Test-InfraBootstrapComplete -InfraRoot $InfraRoot)
+
+if ($needsBootstrap) {
+  Write-Step "Bootstrap inicial da infra (primeira execução)"
+  try {
+    Invoke-InfraBootstrap `
+      -InfraRoot $InfraRoot `
+      -ClientId $GmailClientId `
+      -ClientSecret $GmailClientSecret
+  } catch {
+    Write-Host ""
+    Write-Host "Bootstrap falhou: $($_.Exception.Message)" -ForegroundColor Yellow
+    Write-Host "Tentando subir apenas serviços ausentes..." -ForegroundColor Yellow
+
+    Push-Location $InfraRoot
+    try {
+      Ensure-EmailServiceEnv
+      Start-InfraFromProject -InfraRoot $InfraRoot
+    } finally {
+      Pop-Location
+    }
+
+    Confirm-InfraHealth -RequireEmail | Out-Null
   }
+} elseif (-not (Test-InfraReady)) {
+  Write-Host ""
+  Write-Host "Infra incompleta. Subindo apenas serviços ausentes..." -ForegroundColor Yellow
 
-  Push-Location (Split-Path $InfraCompose -Parent)
+  Push-Location $InfraRoot
   try {
     Ensure-EmailServiceEnv
-    docker compose -f $InfraCompose up -d db email-service
-    if ($LASTEXITCODE -ne 0) {
-      throw "Falha ao subir infra via Docker."
-    }
+    Start-InfraFromProject -InfraRoot $InfraRoot
   } finally {
     Pop-Location
   }
 
-  Start-Sleep -Seconds 5
+  Confirm-InfraHealth -RequireEmail | Out-Null
+} else {
+  Write-Host "Infra já em execução (postgres + email)." -ForegroundColor DarkGray
 }
 
 Write-Step "Instalando dependências (frontend)"
@@ -126,8 +156,8 @@ Write-Host "  Email    : http://localhost:3010/health"
 Write-Host ""
 Write-Host "Pressione Ctrl+C para encerrar." -ForegroundColor DarkGray
 
-$apiCommand = "Set-Location '$ApiDir'; npm run dev"
-Start-Process powershell -ArgumentList @("-NoExit", "-Command", $apiCommand) | Out-Null
+$apiCommand = "npm run dev"
+Start-Process pwsh -ArgumentList @("-NoExit", "-Command", $apiCommand) -WorkingDirectory $ApiDir | Out-Null
 
 Push-Location $ProjectRoot
 try {

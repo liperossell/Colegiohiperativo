@@ -1,1 +1,1 @@
-export { buildProtocolo } from "../../../../infra/api-contract/submission-response.js";
+export { buildProtocolo } from "@filhao/api-contract/submission-response";

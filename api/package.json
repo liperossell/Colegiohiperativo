@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "preinstall": "node ../scripts/ensure-infra.mjs",
     "start": "tsx src/server.js",
     "dev": "tsx watch src/server.js",
     "test": "vitest run",
@@ -11,6 +12,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@filhao/api-contract": "file:../../infra/api-contract",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",

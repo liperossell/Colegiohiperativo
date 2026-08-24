@@ -5,7 +5,7 @@ import { buildProtocolo } from "../utils/protocolo.js";
 import {
   buildSubmissionError,
   buildSubmissionSuccess,
-} from "../../../../infra/api-contract/submission-response.js";
+} from "@filhao/api-contract/submission-response";
 
 const router = Router();
 
