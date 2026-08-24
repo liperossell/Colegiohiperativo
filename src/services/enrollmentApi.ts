@@ -1,6 +1,6 @@
 import type { StudentEnrollment, UserRegistration } from '../types';
 import { calculateAge, digitsOnly } from '../utils/validation';
-import { apiPost } from './api';
+import { apiGet, apiPost } from './api';
 
 interface MatriculaResponse {
   id: string;
@@ -20,6 +20,18 @@ interface LoginResponse {
     full_name: string;
     email: string;
     user_type: string;
+  };
+}
+
+interface VerifyEmailResponse {
+  ok: boolean;
+  message: string;
+  alreadyActivated?: boolean;
+  user?: {
+    id: string;
+    email: string;
+    full_name: string;
+    email_verified: boolean;
   };
 }
 
@@ -119,6 +131,31 @@ export async function submitLogin(
     password,
     remember_me: rememberMe,
   });
+}
+
+const activationRequests = new Map<string, Promise<VerifyEmailResponse>>();
+
+/**
+ * Ativa a conta do usuário a partir do token recebido por e-mail.
+ * Reutiliza a mesma requisição quando o React Strict Mode monta o efeito duas vezes.
+ * @param token Token criptografado presente no link de ativação.
+ */
+export async function verifyAccountActivation(token: string): Promise<VerifyEmailResponse> {
+  const cached = activationRequests.get(token);
+  if (cached) {
+    return cached;
+  }
+
+  const encodedToken = encodeURIComponent(token);
+  const request = apiGet<VerifyEmailResponse>(
+    `/api/auth/verify-email?token=${encodedToken}`
+  ).catch((error) => {
+    activationRequests.delete(token);
+    throw error;
+  });
+
+  activationRequests.set(token, request);
+  return request;
 }
 
 /**

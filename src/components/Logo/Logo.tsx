@@ -1,30 +1,38 @@
+import { useId } from 'react';
 import { Link } from 'react-router-dom';
 import { BRAND } from '../../data/constants';
 import './Logo.css';
 
 interface LogoProps {
-  variant?: 'header' | 'footer' | 'compact';
+  variant?: 'header' | 'footer' | 'compact' | 'auth';
   showSlogan?: boolean;
   asLink?: boolean;
   className?: string;
   onClick?: () => void;
 }
 
+/**
+ * Renderiza o símbolo SVG do Colégio Hiperativo.
+ */
 function LogoSymbol() {
+  const reactId = useId().replace(/:/g, '');
+  const logoGradId = `logoGrad${reactId}`;
+  const accentGradId = `accentGrad${reactId}`;
+
   return (
     <div className="logo__symbol" aria-hidden="true">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
         <defs>
-          <linearGradient id="logoGradHeader" x1="0%" y1="0%" x2="100%" y2="100%">
+          <linearGradient id={logoGradId} x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#1a56db" />
             <stop offset="100%" stopColor="#3b82f6" />
           </linearGradient>
-          <linearGradient id="accentGradHeader" x1="0%" y1="0%" x2="100%" y2="100%">
+          <linearGradient id={accentGradId} x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#f97316" />
             <stop offset="100%" stopColor="#fb923c" />
           </linearGradient>
         </defs>
-        <circle cx="100" cy="100" r="85" fill="url(#logoGradHeader)" />
+        <circle cx="100" cy="100" r="85" fill={`url(#${logoGradId})`} />
         <path
           d="M55 75 L100 60 L145 75 L145 130 L100 145 L55 130 Z"
           fill="white"
@@ -35,7 +43,7 @@ function LogoSymbol() {
         <path d="M108 78 L135 85 L135 127 L108 120 Z" fill="#e0e7ff" />
         <path
           d="M100 45 L108 65 L130 68 L115 82 L118 105 L100 92 L82 105 L85 82 L70 68 L92 65 Z"
-          fill="url(#accentGradHeader)"
+          fill={`url(#${accentGradId})`}
         />
         <text
           x="100"
@@ -54,6 +62,10 @@ function LogoSymbol() {
 }
 
 function LogoContent({ variant, showSlogan }: Pick<LogoProps, 'variant' | 'showSlogan'>) {
+  if (variant === 'auth') {
+    return <LogoSymbol />;
+  }
+
   return (
     <>
       <LogoSymbol />

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { UserLogin, INITIAL_LOGIN, FormErrors } from '../types';
 import { validateEmail } from '../utils/validation';
 import { submitLogin } from '../services/enrollmentApi';
+import Logo from '../components/Logo/Logo';
 import './AuthPages.css';
 
 export default function LoginPage() {
@@ -49,7 +50,7 @@ export default function LoginPage() {
     <div className="auth-page">
       <div className="auth-card">
         <div className="auth-card__header">
-          <img src="/images/logo.svg" alt="Logo Hiperativo" className="auth-card__logo" />
+          <Logo variant="auth" asLink={false} showSlogan={false} className="auth-card__logo" />
           <h1 className="auth-card__title">Área do Aluno</h1>
           <p className="auth-card__subtitle">Acesse sua conta para acompanhar sua jornada acadêmica.</p>
         </div>

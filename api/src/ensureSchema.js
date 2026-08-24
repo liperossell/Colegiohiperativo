@@ -16,8 +16,19 @@ export async function ensureSchema() {
       password_hash VARCHAR(255) NOT NULL,
       user_type VARCHAR(20) NOT NULL,
       accept_terms BOOLEAN NOT NULL DEFAULT FALSE,
+      email_verified BOOLEAN NOT NULL DEFAULT FALSE,
+      email_verified_at TIMESTAMPTZ,
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     )
+  `);
+
+  await query(`
+    ALTER TABLE usuarios
+    ADD COLUMN IF NOT EXISTS email_verified BOOLEAN NOT NULL DEFAULT FALSE
+  `);
+  await query(`
+    ALTER TABLE usuarios
+    ADD COLUMN IF NOT EXISTS email_verified_at TIMESTAMPTZ
   `);
 
   await query(`

@@ -27,7 +27,7 @@ router.post("/login", async (req, res) => {
 
   try {
     const result = await query(
-      `SELECT id, full_name, email, user_type, password_hash
+      `SELECT id, full_name, email, user_type, password_hash, email_verified
        FROM usuarios
        WHERE email = $1
        LIMIT 1`,
@@ -43,6 +43,13 @@ router.post("/login", async (req, res) => {
 
     if (!passwordMatch) {
       return res.status(401).json({ message: "E-mail ou senha incorretos." });
+    }
+
+    if (!user.email_verified) {
+      return res.status(403).json({
+        message: "Conta pendente de ativação. Verifique seu e-mail para confirmar o cadastro.",
+        code: "EMAIL_NOT_VERIFIED",
+      });
     }
 
     const expiresIn = data.remember_me ? "30d" : "7d";

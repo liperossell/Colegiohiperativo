@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { UserRegistration, INITIAL_REGISTRATION, FormErrors } from '../types';
 import { formatCPF, formatPhone, validateEmail, validateCPF, validatePassword } from '../utils/validation';
 import { submitRegistro } from '../services/enrollmentApi';
+import Logo from '../components/Logo/Logo';
 import './AuthPages.css';
 
 const USER_TYPES = [
@@ -76,7 +77,7 @@ export default function RegisterPage() {
     <div className="auth-page">
       <div className="auth-card auth-card--wide">
         <div className="auth-card__header">
-          <img src="/images/logo.svg" alt="Logo Hiperativo" className="auth-card__logo" />
+          <Logo variant="auth" asLink={false} showSlogan={false} className="auth-card__logo" />
           <h1 className="auth-card__title">Criar Conta</h1>
           <p className="auth-card__subtitle">Cadastre-se para acessar o portal do Hiperativo.</p>
         </div>

@@ -7,6 +7,7 @@ import SportsPage from './pages/SportsPage';
 import EnrollmentPage from './pages/EnrollmentPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import ConfirmEmailPage from './pages/ConfirmEmailPage';
 import ContactPage from './pages/ContactPage';
 import NotFoundPage from './pages/NotFoundPage';
 
@@ -23,6 +24,7 @@ export default function App() {
           <Route path="contato" element={<ContactPage />} />
           <Route path="login" element={<LoginPage />} />
           <Route path="cadastro" element={<RegisterPage />} />
+          <Route path="confirmar-email" element={<ConfirmEmailPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>

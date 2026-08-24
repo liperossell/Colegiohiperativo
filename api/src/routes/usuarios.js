@@ -2,6 +2,7 @@ import { Router } from "express";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { query } from "../db.js";
+import { emailService } from "../services/email/email.service.ts";
 
 const router = Router();
 
@@ -43,9 +44,9 @@ router.post("/", async (req, res) => {
 
     const result = await query(
       `INSERT INTO usuarios (
-        full_name, email, phone, cpf, password_hash, user_type, accept_terms
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7)
-      RETURNING id, full_name, email, user_type, created_at`,
+        full_name, email, phone, cpf, password_hash, user_type, accept_terms, email_verified
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, FALSE)
+      RETURNING id, full_name, email, user_type, email_verified, created_at`,
       [
         data.full_name,
         data.email.toLowerCase(),
@@ -57,14 +58,39 @@ router.post("/", async (req, res) => {
       ]
     );
 
-    return res.status(201).json({
-      id: result.rows[0].id,
-      full_name: result.rows[0].full_name,
-      email: result.rows[0].email,
-      user_type: result.rows[0].user_type,
-      created_at: result.rows[0].created_at,
-      message: "Conta criada com sucesso.",
-    });
+    const user = result.rows[0];
+
+    try {
+      const emailResult = await emailService.sendAccountActivationEmail({
+        to: user.email,
+        template: "account-activation",
+        userId: user.id,
+        variables: {
+          fullName: user.full_name,
+        },
+      });
+
+      return res.status(201).json({
+        id: user.id,
+        full_name: user.full_name,
+        email: user.email,
+        user_type: user.user_type,
+        email_verified: user.email_verified,
+        created_at: user.created_at,
+        activation_link: emailResult.activationLink,
+        message: "Conta criada com sucesso. Verifique seu e-mail para ativar a conta.",
+      });
+    } catch (emailError) {
+      console.error("Erro ao enviar e-mail de ativação:", emailError);
+      const activationLink = emailService.createActivationLinkForUser(user.id, user.email);
+
+      return res.status(502).json({
+        message:
+          "Conta criada, mas não foi possível enviar o e-mail de ativação. Use o link abaixo para ativar a conta.",
+        userId: user.id,
+        activation_link: activationLink,
+      });
+    }
   } catch (error) {
     console.error("Erro ao cadastrar usuário:", error);
     return res.status(500).json({ message: "Erro interno ao criar a conta." });
