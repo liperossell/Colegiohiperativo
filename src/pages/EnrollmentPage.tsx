@@ -1,4 +1,4 @@
-import { useState, FormEvent, ChangeEvent } from 'react';
+import { useState, FormEvent, ChangeEvent, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   COURSE_LEVELS,
@@ -26,6 +26,8 @@ import {
   fetchAddressByCEP,
 } from '../utils/validation';
 import { submitMatricula } from '../services/enrollmentApi';
+import type { FormSubmissionResponse } from '../services/enrollmentApi';
+import { getStoredUser } from '../utils/authSession';
 import './EnrollmentPage.css';
 
 const STEPS: { key: EnrollmentStep; label: string }[] = [
@@ -50,13 +52,28 @@ function getCourseOptions(level: string): string[] {
 }
 
 export default function EnrollmentPage() {
+  const [storedUser] = useState(() => getStoredUser());
   const [step, setStep] = useState<EnrollmentStep>('personal');
   const [form, setForm] = useState<StudentEnrollment>(INITIAL_ENROLLMENT);
   const [errors, setErrors] = useState<FormErrors>({});
   const [submitted, setSubmitted] = useState(false);
+  const [submissionResult, setSubmissionResult] = useState<FormSubmissionResponse | null>(null);
   const [loadingCEP, setLoadingCEP] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
+  const hasLockedAccountFields = Boolean(storedUser);
+
+  useEffect(() => {
+    if (!storedUser) return;
+
+    setForm((prev) => ({
+      ...prev,
+      fullName: storedUser.full_name,
+      email: storedUser.email,
+      phone: storedUser.phone ? formatPhone(storedUser.phone) : prev.phone,
+      cpf: storedUser.cpf ? formatCPF(storedUser.cpf) : prev.cpf,
+    }));
+  }, [storedUser]);
 
   const currentStepIndex = STEPS.findIndex((s) => s.key === step);
   const isMinor = form.birthDate ? calculateAge(form.birthDate) < 18 : false;
@@ -185,7 +202,10 @@ export default function EnrollmentPage() {
     setSubmitError('');
 
     submitMatricula(form)
-      .then(() => setSubmitted(true))
+      .then((result) => {
+        setSubmissionResult(result);
+        setSubmitted(true);
+      })
       .catch((error: Error) => {
         setSubmitError(error.message || 'Erro ao enviar matrícula. Tente novamente.');
       })
@@ -203,6 +223,11 @@ export default function EnrollmentPage() {
               Recebemos sua solicitação de matrícula para <strong>{form.fullName}</strong>.
               Enviaremos a confirmação para <strong>{form.email}</strong> em até 48 horas.
             </p>
+            {submissionResult?.protocolo && (
+              <p className="enrollment__protocol">
+                Protocolo: <strong>{submissionResult.protocolo}</strong>
+              </p>
+            )}
             <div style={{ marginTop: '2rem', display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
               <Link to="/" className="btn btn--primary">Voltar ao Início</Link>
               <Link to="/cadastro" className="btn btn--outline">Criar Conta de Acesso</Link>
@@ -221,6 +246,11 @@ export default function EnrollmentPage() {
           <p className="enrollment__subtitle">
             Preencha todos os dados para solicitar a matrícula no Colégio Faculdade Hiperativo.
           </p>
+          {hasLockedAccountFields && (
+            <p className="enrollment__account-hint">
+              Nome, CPF, e-mail e telefone foram preenchidos da sua conta e não podem ser alterados aqui.
+            </p>
+          )}
         </div>
 
         <div className="enrollment__steps">
@@ -244,8 +274,9 @@ export default function EnrollmentPage() {
               <div className="enrollment__form-grid">
                 <div className="form-group enrollment__form-grid--full">
                   <label className="form-label form-label--required" htmlFor="fullName">Nome Completo</label>
-                  <input id="fullName" name="fullName" className={`form-input ${errors.fullName ? 'form-input--error' : ''}`}
-                    value={form.fullName} onChange={(e) => updateField('fullName', e.target.value)} placeholder="Nome completo do aluno(a)" />
+                  <input id="fullName" name="fullName" className={`form-input ${errors.fullName ? 'form-input--error' : ''} ${hasLockedAccountFields ? 'form-input--locked' : ''}`}
+                    value={form.fullName} onChange={(e) => updateField('fullName', e.target.value)} placeholder="Nome completo do aluno(a)"
+                    readOnly={hasLockedAccountFields} />
                   {errors.fullName && <span className="form-error">{errors.fullName}</span>}
                 </div>
                 <div className="form-group">
@@ -270,8 +301,9 @@ export default function EnrollmentPage() {
                 </div>
                 <div className="form-group">
                   <label className="form-label form-label--required" htmlFor="cpf">CPF</label>
-                  <input id="cpf" name="cpf" className={`form-input ${errors.cpf ? 'form-input--error' : ''}`}
-                    value={form.cpf} onChange={(e) => handleMaskedInput(e, 'cpf')} placeholder="000.000.000-00" maxLength={14} />
+                  <input id="cpf" name="cpf" className={`form-input ${errors.cpf ? 'form-input--error' : ''} ${hasLockedAccountFields ? 'form-input--locked' : ''}`}
+                    value={form.cpf} onChange={(e) => handleMaskedInput(e, 'cpf')} placeholder="000.000.000-00" maxLength={14}
+                    readOnly={hasLockedAccountFields} />
                   {errors.cpf && <span className="form-error">{errors.cpf}</span>}
                 </div>
                 <div className="form-group">
@@ -299,14 +331,16 @@ export default function EnrollmentPage() {
               <div className="enrollment__form-grid">
                 <div className="form-group">
                   <label className="form-label form-label--required" htmlFor="email">E-mail</label>
-                  <input id="email" name="email" type="email" className={`form-input ${errors.email ? 'form-input--error' : ''}`}
-                    value={form.email} onChange={(e) => updateField('email', e.target.value)} placeholder="email@exemplo.com" />
+                  <input id="email" name="email" type="email" className={`form-input ${errors.email ? 'form-input--error' : ''} ${hasLockedAccountFields ? 'form-input--locked' : ''}`}
+                    value={form.email} onChange={(e) => updateField('email', e.target.value)} placeholder="email@exemplo.com"
+                    readOnly={hasLockedAccountFields} />
                   {errors.email && <span className="form-error">{errors.email}</span>}
                 </div>
                 <div className="form-group">
                   <label className="form-label form-label--required" htmlFor="phone">Telefone</label>
-                  <input id="phone" name="phone" className={`form-input ${errors.phone ? 'form-input--error' : ''}`}
-                    value={form.phone} onChange={(e) => handleMaskedInput(e, 'phone')} placeholder="(00) 00000-0000" />
+                  <input id="phone" name="phone" className={`form-input ${errors.phone ? 'form-input--error' : ''} ${hasLockedAccountFields ? 'form-input--locked' : ''}`}
+                    value={form.phone} onChange={(e) => handleMaskedInput(e, 'phone')} placeholder="(00) 00000-0000"
+                    readOnly={hasLockedAccountFields} />
                   {errors.phone && <span className="form-error">{errors.phone}</span>}
                 </div>
                 <div className="form-group enrollment__form-grid--full">

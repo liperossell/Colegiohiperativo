@@ -1,6 +1,12 @@
 import crypto from "node:crypto";
-import type { ActivationTokenPayload } from "../../types/email.types.js";
 import { InvalidActivationTokenError } from "../../errors/email.errors.js";
+
+/** Payload criptografado embutido no link de ativação de conta. */
+export interface ActivationTokenPayload {
+  userId: string;
+  email: string;
+  exp: number;
+}
 
 const ALGORITHM = "aes-256-gcm";
 const IV_LENGTH = 12;

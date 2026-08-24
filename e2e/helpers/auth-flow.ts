@@ -11,10 +11,11 @@ export interface RegistrationPayload {
 
 export interface RegistrationResponse {
   id: string;
-  full_name: string;
-  email: string;
-  activation_link: string;
+  protocolo: string;
   message: string;
+  meta?: {
+    activation_link?: string;
+  };
 }
 
 /**
@@ -44,11 +45,15 @@ export async function registerUserAndGetActivationLink(
     throw new Error(data.message ?? 'Falha ao cadastrar usuário para teste E2E.');
   }
 
-  if (!data.activation_link) {
+  const activationLink = data.meta?.activation_link;
+  if (!activationLink) {
     throw new Error('Resposta de cadastro não retornou activation_link.');
   }
 
-  return data;
+  return {
+    ...data,
+    meta: { activation_link: activationLink },
+  };
 }
 
 /**
@@ -58,4 +63,16 @@ export async function registerUserAndGetActivationLink(
 export function toActivationRoute(activationLink: string): string {
   const url = new URL(activationLink);
   return `${url.pathname}${url.search}`;
+}
+
+/**
+ * Retorna o link de ativação da resposta padronizada de cadastro.
+ * @param registration Resposta da API de cadastro de usuário.
+ */
+export function getActivationLink(registration: RegistrationResponse): string {
+  const link = registration.meta?.activation_link;
+  if (!link) {
+    throw new Error('Resposta de cadastro não retornou activation_link.');
+  }
+  return link;
 }

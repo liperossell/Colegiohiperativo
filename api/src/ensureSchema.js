@@ -9,6 +9,7 @@ export async function ensureSchema() {
   await query(`
     CREATE TABLE IF NOT EXISTS usuarios (
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      protocolo VARCHAR(20) NOT NULL UNIQUE,
       full_name VARCHAR(200) NOT NULL,
       email VARCHAR(160) NOT NULL UNIQUE,
       phone VARCHAR(20) NOT NULL,
@@ -29,6 +30,21 @@ export async function ensureSchema() {
   await query(`
     ALTER TABLE usuarios
     ADD COLUMN IF NOT EXISTS email_verified_at TIMESTAMPTZ
+  `);
+  await query(`
+    ALTER TABLE usuarios
+    ADD COLUMN IF NOT EXISTS protocolo VARCHAR(20)
+  `);
+  await query(`
+    UPDATE usuarios
+    SET protocolo = 'HP' || TO_CHAR(created_at, 'YYMMDD') ||
+      LPAD((ABS(HASHTEXT(id::text)) % 9000 + 1000)::text, 4, '0')
+    WHERE protocolo IS NULL
+  `);
+  await query(`
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_usuarios_protocolo
+    ON usuarios (protocolo)
+    WHERE protocolo IS NOT NULL
   `);
 
   await query(`

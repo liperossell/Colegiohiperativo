@@ -2,15 +2,16 @@ import type { StudentEnrollment, UserRegistration } from '../types';
 import { calculateAge, digitsOnly } from '../utils/validation';
 import { apiGet, apiPost } from './api';
 
-interface MatriculaResponse {
+/** Resposta padronizada de submissão de formulário (Hiperativo e Saúde Mais). */
+export interface FormSubmissionResponse {
   id: string;
   protocolo: string;
+  created_at: string;
   message: string;
-}
-
-interface UsuarioResponse {
-  id: string;
-  message: string;
+  meta?: {
+    activation_link?: string;
+    [key: string]: unknown;
+  };
 }
 
 interface LoginResponse {
@@ -19,6 +20,8 @@ interface LoginResponse {
     id: string;
     full_name: string;
     email: string;
+    phone: string;
+    cpf: string;
     user_type: string;
   };
 }
@@ -95,16 +98,16 @@ export function buildMatriculaPayload(form: StudentEnrollment) {
  * Registra matrícula no backend.
  * @param form - Dados do formulário de matrícula.
  */
-export async function submitMatricula(form: StudentEnrollment): Promise<MatriculaResponse> {
-  return apiPost<MatriculaResponse>('/api/matriculas', buildMatriculaPayload(form));
+export async function submitMatricula(form: StudentEnrollment): Promise<FormSubmissionResponse> {
+  return apiPost<FormSubmissionResponse>('/api/cadastros', buildMatriculaPayload(form));
 }
 
 /**
  * Cria conta de usuário no backend.
  * @param form - Dados do formulário de cadastro.
  */
-export async function submitRegistro(form: UserRegistration): Promise<UsuarioResponse> {
-  return apiPost<UsuarioResponse>('/api/usuarios', {
+export async function submitRegistro(form: UserRegistration): Promise<FormSubmissionResponse> {
+  return apiPost<FormSubmissionResponse>('/api/usuarios', {
     full_name: form.fullName.trim(),
     email: form.email.trim(),
     phone: digitsOnly(form.phone),

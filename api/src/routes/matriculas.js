@@ -2,6 +2,10 @@ import { Router } from "express";
 import { z } from "zod";
 import { query } from "../db.js";
 import { buildProtocolo } from "../utils/protocolo.js";
+import {
+  buildSubmissionError,
+  buildSubmissionSuccess,
+} from "../../../../infra/api-contract/submission-response.js";
 
 const router = Router();
 
@@ -52,10 +56,13 @@ router.post("/", async (req, res) => {
   const parsed = matriculaSchema.safeParse(req.body);
 
   if (!parsed.success) {
-    return res.status(400).json({
-      message: "Dados inválidos. Revise o formulário de matrícula.",
-      errors: parsed.error.flatten().fieldErrors,
-    });
+    return res.status(400).json(
+      buildSubmissionError({
+        message: "Dados inválidos. Revise o formulário de matrícula.",
+        code: "VALIDATION_ERROR",
+        errors: parsed.error.flatten().fieldErrors,
+      })
+    );
   }
 
   const data = parsed.data;
@@ -120,15 +127,22 @@ router.post("/", async (req, res) => {
     );
 
     const row = result.rows[0];
-    return res.status(201).json({
-      id: row.id,
-      protocolo: row.protocolo,
-      created_at: row.created_at,
-      message: "Matrícula registrada com sucesso.",
-    });
+    return res.status(201).json(
+      buildSubmissionSuccess({
+        id: row.id,
+        protocolo: row.protocolo,
+        createdAt: row.created_at,
+        message: "Matrícula registrada com sucesso.",
+      })
+    );
   } catch (error) {
     console.error("Erro ao salvar matrícula:", error);
-    return res.status(500).json({ message: "Erro interno ao salvar a matrícula." });
+    return res.status(500).json(
+      buildSubmissionError({
+        message: "Erro interno ao salvar a matrícula.",
+        code: "INTERNAL_ERROR",
+      })
+    );
   }
 });
 

@@ -190,6 +190,24 @@
   margin-bottom: var(--space-lg);
 }
 
+.enrollment__protocol {
+  margin-top: var(--space-lg);
+  font-size: 1.0625rem;
+  color: var(--color-gray-700);
+}
+
+.enrollment__account-hint {
+  margin-top: var(--space-md);
+  font-size: 0.9375rem;
+  color: var(--color-primary);
+}
+
+.form-input--locked {
+  background: var(--color-gray-100);
+  color: var(--color-gray-700);
+  cursor: not-allowed;
+}
+
 @media (max-width: 768px) {
   .enrollment__form-grid {
     grid-template-columns: 1fr;

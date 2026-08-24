@@ -8,7 +8,6 @@ import authRouter from "./routes/auth.js";
 import emailVerificationRouter from "./routes/email-verification.js";
 import matriculasRouter from "./routes/matriculas.js";
 import contatoRouter from "./routes/contato.js";
-import emailsRouter from "./routes/emails.ts";
 
 dotenv.config();
 
@@ -97,7 +96,7 @@ app.get("/api/admin/mensagens", requireAdmin, async (_req, res) => {
 app.use("/api/usuarios", usuariosRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/auth", emailVerificationRouter);
-app.use("/api/emails", emailsRouter);
+app.use("/api/cadastros", matriculasRouter);
 app.use("/api/matriculas", matriculasRouter);
 app.use("/api/contato", contatoRouter);
 

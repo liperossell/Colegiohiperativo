@@ -7,7 +7,7 @@ export default defineConfig({
     include: ["src/**/*.test.ts"],
     coverage: {
       provider: "v8",
-      include: ["src/services/**/*.ts", "src/routes/emails.ts"],
+      include: ["src/services/**/*.ts"],
     },
   },
 });

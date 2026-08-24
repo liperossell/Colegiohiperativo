@@ -8,6 +8,7 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 CREATE TABLE IF NOT EXISTS usuarios (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  protocolo VARCHAR(20) NOT NULL UNIQUE,
   full_name VARCHAR(200) NOT NULL,
   email VARCHAR(160) NOT NULL UNIQUE,
   phone VARCHAR(20) NOT NULL,
@@ -20,6 +21,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
 
 CREATE INDEX IF NOT EXISTS idx_usuarios_email ON usuarios (email);
 CREATE INDEX IF NOT EXISTS idx_usuarios_cpf ON usuarios (cpf);
+CREATE INDEX IF NOT EXISTS idx_usuarios_protocolo ON usuarios (protocolo);
 
 CREATE TABLE IF NOT EXISTS matriculas (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

@@ -18,6 +18,7 @@ export default function RegisterPage() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [protocolo, setProtocolo] = useState('');
   const [submitError, setSubmitError] = useState('');
 
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
@@ -64,7 +65,10 @@ export default function RegisterPage() {
     setSubmitError('');
 
     submitRegistro(form)
-      .then(() => setSuccess(true))
+      .then((result) => {
+        setProtocolo(result.protocolo);
+        setSuccess(true);
+      })
       .catch((error: Error) => {
         setSubmitError(error.message || 'Erro ao criar conta. Tente novamente.');
       })
@@ -87,6 +91,11 @@ export default function RegisterPage() {
             <div className="alert alert--success">
               Conta criada com sucesso! Verifique seu e-mail para ativar a conta.
             </div>
+            {protocolo && (
+              <p className="auth-card__protocol">
+                Protocolo: <strong>{protocolo}</strong>
+              </p>
+            )}
             <Link to="/login" className="btn btn--primary btn--lg" style={{ width: '100%', marginTop: '1rem' }}>
               Ir para Login
             </Link>

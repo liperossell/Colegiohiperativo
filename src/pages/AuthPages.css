@@ -52,6 +52,13 @@
   font-size: 0.9375rem;
 }
 
+.auth-card__protocol {
+  margin-top: var(--space-md);
+  text-align: center;
+  font-size: 0.9375rem;
+  color: var(--color-gray-700);
+}
+
 .auth-card__footer {
   text-align: center;
   margin-top: var(--space-xl);

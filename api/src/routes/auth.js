@@ -27,7 +27,7 @@ router.post("/login", async (req, res) => {
 
   try {
     const result = await query(
-      `SELECT id, full_name, email, user_type, password_hash, email_verified
+      `SELECT id, full_name, email, phone, cpf, user_type, password_hash, email_verified
        FROM usuarios
        WHERE email = $1
        LIMIT 1`,
@@ -69,6 +69,8 @@ router.post("/login", async (req, res) => {
         id: user.id,
         full_name: user.full_name,
         email: user.email,
+        phone: user.phone,
+        cpf: user.cpf,
         user_type: user.user_type,
       },
     });

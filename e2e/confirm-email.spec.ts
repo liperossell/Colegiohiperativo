@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { registrationData, uniqueCpf, uniqueEmail } from './fixtures/test-data';
-import { registerUserAndGetActivationLink, toActivationRoute } from './helpers/auth-flow';
+import { registerUserAndGetActivationLink, getActivationLink, toActivationRoute } from './helpers/auth-flow';
 
 /**
  * Valida renderização do logo Hiperativo no card da página de ativação de conta.
@@ -33,9 +33,9 @@ test.describe('Ativação de conta — confirmar e-mail', () => {
       userType: registrationData.userType,
     });
 
-    expect(registration.activation_link).toContain('/confirmar-email?token=');
+    expect(getActivationLink(registration)).toContain('/confirmar-email?token=');
 
-    await page.goto(toActivationRoute(registration.activation_link));
+    await page.goto(toActivationRoute(getActivationLink(registration)));
 
     await expect(page.getByRole('heading', { name: 'Ativação de Conta' })).toBeVisible();
     await expectAuthCardLogoVisible(page);
